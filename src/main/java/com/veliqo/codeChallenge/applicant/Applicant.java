@@ -50,4 +50,9 @@ public class Applicant implements Serializable {
 
     private BigDecimal balance;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate lastUpdate;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate dateCreated;
 }
