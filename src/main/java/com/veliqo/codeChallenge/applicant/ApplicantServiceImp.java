@@ -2,9 +2,11 @@ package com.veliqo.codeChallenge.applicant;
 
 import com.veliqo.codeChallenge.exceptions.RecordExistException;
 import com.veliqo.codeChallenge.exceptions.RecordNotFoundException;
+import com.veliqo.codeChallenge.transactions.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +34,7 @@ public class ApplicantServiceImp implements ApplicantService {
         });
         return Optional.of(converter.toDTO(applicantRepository.save(applicant)));
     }
+
 
     @Override
     public List<ApplicantDTO> findAllApplicants() {
@@ -61,5 +64,15 @@ public class ApplicantServiceImp implements ApplicantService {
         return Optional.of(converter.toDTO(applicantRepository.save(applicant)));
     }
 
-
+    @Override
+    public BigDecimal updateApplicantBalance(Transaction transaction) {
+        Optional<Applicant> applicant = applicantRepository.findByEmail(transaction.getApplicantEmail());
+        if(applicant.isPresent()){
+            BigDecimal newBal = applicant.get().getBalance().add(transaction.getAmount());
+            applicantRepository.updateApplicantBalance(newBal,applicant.get().getEmail());
+            Optional<Applicant> updateApplicant = applicantRepository.findByEmail(transaction.getApplicantEmail());
+            return updateApplicant.get().getBalance();
+        }
+        throw new RecordNotFoundException(String.format("Applicant %s not found!",transaction.getApplicantEmail()));
+    }
 }

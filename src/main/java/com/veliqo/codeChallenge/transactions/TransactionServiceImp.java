@@ -1,10 +1,13 @@
 package com.veliqo.codeChallenge.transactions;
 
 
+import com.veliqo.codeChallenge.applicant.ApplicantDTO;
+import com.veliqo.codeChallenge.applicant.ApplicantService;
 import com.veliqo.codeChallenge.exceptions.RecordNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,10 +19,12 @@ import java.util.Optional;
 @Service
 public class TransactionServiceImp implements TransactionService {
     private final TransactionRepository transactionRepository;
+    private final ApplicantService applicantService;
 
     @Autowired
-    public TransactionServiceImp(TransactionRepository transactionRepository) {
+    public TransactionServiceImp(TransactionRepository transactionRepository,ApplicantService applicantService) {
         this.transactionRepository = transactionRepository;
+        this.applicantService = applicantService;
     }
 
     @Autowired
@@ -27,7 +32,13 @@ public class TransactionServiceImp implements TransactionService {
 
     @Override
     public Optional<TransactionDTO> saveTransaction(Transaction transaction) {
-        return Optional.of(converter.toDTO(transactionRepository.save(transaction)));
+
+        Transaction trans = transactionRepository.save(transaction);
+        if(trans!=null){
+           BigDecimal balance = applicantService.updateApplicantBalance(transaction);
+            return Optional.of(converter.toDTO(trans));
+        }
+        throw new RuntimeException("Failed to save transaction");
     }
 
     @Override
@@ -66,6 +77,4 @@ public class TransactionServiceImp implements TransactionService {
         transactionRepository.findById(transaction.getId());
         return Optional.of(converter.toDTO(transactionRepository.save(transaction)));
     }
-
-
 }
