@@ -1,4 +1,4 @@
-package com.veliqo.insurance;
+package com.veliqo.codeChallenge;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
