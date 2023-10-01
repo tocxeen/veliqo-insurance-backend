@@ -1,5 +1,7 @@
 package com.veliqo.codeChallenge.user;
 
+import com.veliqo.codeChallenge.authentication.AuthRequest;
+import com.veliqo.codeChallenge.config.JwtService;
 import com.veliqo.codeChallenge.exceptions.RecordExistException;
 import com.veliqo.codeChallenge.exceptions.RecordNotFoundException;
 import com.veliqo.codeChallenge.exceptions.UpdateMessage;
@@ -7,7 +9,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;
 
@@ -16,30 +23,37 @@ import java.util.List;
  **/
 @Slf4j
 @RestController
-@RequestMapping("api/v1/veliqo/user")
+@RequestMapping("/auth")
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceImp userService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserServiceImp userService) {
         this.userService = userService;
     }
 
     @Autowired
     private UserDTOConverter converter;
 
-    @PostMapping("/register")
+    @Autowired
+    private JwtService jwtService;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @PostMapping("/add")
     public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO user) {
         UserDTO savedUser = userService.saveUser(converter.toEntity(user)).orElseThrow(()->
                 new RecordExistException("Failed to create customer"));
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
-    @GetMapping("/getUserByEmail/{email}")
+
+    @GetMapping("/getUserByEmail/{username}")
     public ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email) {
         log.debug("finding user with email {}", email);
-        UserDTO user = userService.findUserByEmail(email).orElseThrow(()->
+        UserDTO user = userService.findUserByUsername(email).orElseThrow(()->
                 new RecordNotFoundException(String.format("User not found")));
         return new ResponseEntity<>(user,HttpStatus.OK);
     }
@@ -68,6 +82,29 @@ public class UserController {
             return  updateMessage;
         }
         throw new RuntimeException("Failed to update password");
+    }
+
+
+    @GetMapping("/user/userProfile")
+    @PreAuthorize("hasAuthority('USER_ADMIN')")
+    public String userProfile() {
+        return "Welcome to User Profile";
+    }
+
+    @GetMapping("/admin/adminProfile")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public String adminProfile() {
+        return "Welcome to Admin Profile";
+    }
+
+    @PostMapping("/generateToken")
+    public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+        if (authentication.isAuthenticated()) {
+            return jwtService.generateToken(authRequest.getUsername());
+        } else {
+            throw new UsernameNotFoundException("invalid user request !");
+        }
     }
 
 }

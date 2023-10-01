@@ -10,19 +10,19 @@ public class UserDTOConverter {
 
     public User toEntity(UserDTO userDTO) {
         User user = new User();
-        user.setEmail(userDTO.getEmail());
+        user.setUsername(userDTO.getUsername());
         user.setName(userDTO.getName());
-        user.setRole(userDTO.getRole());
+        user.setRoles(userDTO.getRoles());
         user.setStatus(userDTO.getStatus());
         return user;
     }
 
     public UserDTO toDTO(User user){
         UserDTO userDTO = new UserDTO();
-        userDTO.setEmail(user.getEmail());
+        userDTO.setUsername(user.getUsername());
         userDTO.setName(user.getName());
         userDTO.setStatus(user.getStatus());
-        userDTO.setRole(user.getRole());
+        userDTO.setRoles(user.getRoles());
         return userDTO;
     }
 }

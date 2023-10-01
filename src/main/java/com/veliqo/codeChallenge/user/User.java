@@ -5,6 +5,7 @@ import com.veliqo.codeChallenge.user.models.Role;
 import com.veliqo.codeChallenge.user.models.Status;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
 
@@ -24,7 +25,7 @@ public class User implements Serializable {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String email;
+    private String username;
 
     private String name;
 
@@ -33,7 +34,7 @@ public class User implements Serializable {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
+//    @Enumerated(EnumType.STRING)
+    private String roles;
 
 }

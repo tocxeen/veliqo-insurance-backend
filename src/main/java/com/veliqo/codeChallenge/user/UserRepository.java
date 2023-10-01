@@ -16,12 +16,14 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User,Long> {
 
     @Modifying(clearAutomatically = true)
-    @Query(value = "UPDATE User u SET u.status = :status WHERE u.email = :email")
+    @Query(value = "UPDATE User u SET u.status = :status WHERE u.username = :email")
     int updateStatusByEmail(@Param("status") Status status, @Param("email") String email);
 
-    Optional<User> findByEmail(String email);
+    Optional<User> findByUsername(String email);
 
     @Modifying(clearAutomatically = true)
-    @Query(value = "UPDATE User u SET u.password = :password WHERE u.email = :email")
+    @Query(value = "UPDATE User u SET u.password = :password WHERE u.username = :email")
     int updatePasswordByEmail(@Param("password") String password, @Param("email") String email);
+
+    Optional<User> findByName(String username);
 }
