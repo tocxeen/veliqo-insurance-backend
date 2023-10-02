@@ -1,6 +1,7 @@
 package com.veliqo.codeChallenge.user;
 
 import com.veliqo.codeChallenge.authentication.AuthRequest;
+import com.veliqo.codeChallenge.authentication.AuthResponse;
 import com.veliqo.codeChallenge.config.JwtService;
 import com.veliqo.codeChallenge.exceptions.RecordExistException;
 import com.veliqo.codeChallenge.exceptions.RecordNotFoundException;
@@ -23,7 +24,7 @@ import java.util.List;
  **/
 @Slf4j
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/veliqo/user")
 public class UserController {
 
     private final UserServiceImp userService;
@@ -49,10 +50,10 @@ public class UserController {
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
-
-    @GetMapping("/getUserByEmail/{username}")
+    @GetMapping("/getUserByEmail/{email}")
     public ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email) {
         log.debug("finding user with email {}", email);
+
         UserDTO user = userService.findUserByUsername(email).orElseThrow(()->
                 new RecordNotFoundException(String.format("User not found")));
         return new ResponseEntity<>(user,HttpStatus.OK);
@@ -72,16 +73,23 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @PutMapping("/update/{email}/{password}")
-    public UpdateMessage updatePassword(@PathVariable String email, @PathVariable String password) {
+    @PutMapping("/updatePassword/{email}/{currentPassword}/{newPassword}")
+    public UpdateMessage updatePassword(@PathVariable String email, @PathVariable String currentPassword, @PathVariable String newPassword) {
         UpdateMessage updateMessage =  new UpdateMessage();
-        int isUpdated = userService.updatePassword(password,email);
+        int isUpdated = userService.updatePassword(email,currentPassword,newPassword);
         if(isUpdated==1){
             updateMessage.setMessage(String.format("Password for user %s has been updated successfully.",email));
             updateMessage.setStatusCode(HttpStatus.OK.value());
             return  updateMessage;
         }
         throw new RuntimeException("Failed to update password");
+    }
+
+    @PutMapping("/updateName/{email}/{name}")
+    public ResponseEntity<UserDTO> updateName(@PathVariable String email, @PathVariable String name) {
+        UserDTO user = userService.updateName(name,email).orElseThrow(() ->
+                new RuntimeException("Failed to update user"));
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
 
@@ -92,19 +100,27 @@ public class UserController {
     }
 
     @GetMapping("/admin/adminProfile")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public String adminProfile() {
         return "Welcome to Admin Profile";
     }
 
     @PostMapping("/generateToken")
-    public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+    public AuthResponse authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
         if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(authRequest.getUsername());
+            UserDTO user = userService.findUserByUsername(authRequest.getUsername()).orElseThrow(()->
+                    new RecordNotFoundException(String.format("User not found")));
+
+             return  jwtService.generateToken(user);
+
         } else {
             throw new UsernameNotFoundException("invalid user request !");
         }
+    }
+
+    @GetMapping("/numberOfUsers")
+    public ResponseEntity<NumberOfUsers> getTotalUsers() {
+        return ResponseEntity.ok(userService.getTotalUsers());
     }
 
 }

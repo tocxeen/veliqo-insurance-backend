@@ -26,3 +26,14 @@ public class UserDTO {
 
 
 }
+
+@Getter
+@Setter
+class NumberOfUsers{
+
+    private Long admin;
+
+    private Long applicants;
+
+    private Long total;
+}

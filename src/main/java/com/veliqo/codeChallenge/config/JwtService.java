@@ -1,5 +1,7 @@
 package com.veliqo.codeChallenge.config;
 
+import com.veliqo.codeChallenge.authentication.AuthResponse;
+import com.veliqo.codeChallenge.user.UserDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -27,14 +29,22 @@ public class JwtService {
     @Value("${veliqoinsurance.app.jwtSecret}")
     private String jwtSigningKey;
 
-    public String generateToken(String userName) {
+
+    public AuthResponse generateToken(UserDTO user) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("roles","ROLE_ADMIN");
-        System.out.println("Claims :"+claims+" User :"+userName);
-        return createToken(claims, userName);
+        claims.put("roles",user.getRoles());
+        AuthResponse authResponse = new AuthResponse();
+        authResponse.setToken(createToken(claims, user.getUsername()));
+        authResponse.setName(user.getName());
+        authResponse.setStatus(user.getStatus());
+        authResponse.setUsername(user.getUsername());
+        authResponse.setRoles(user.getRoles());
+
+        return authResponse;
     }
 
     private String createToken(Map<String, Object> claims, String userName) {
+
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userName)

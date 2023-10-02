@@ -14,6 +14,7 @@ public class UserDTOConverter {
         user.setName(userDTO.getName());
         user.setRoles(userDTO.getRoles());
         user.setStatus(userDTO.getStatus());
+        user.setPassword(userDTO.getPassword());
         return user;
     }
 
