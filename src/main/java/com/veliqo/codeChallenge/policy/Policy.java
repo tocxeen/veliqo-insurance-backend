@@ -6,7 +6,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Currency;
+
 
 /**
  * Author Richard K Chifamba on 9/24/2023
@@ -26,7 +26,7 @@ public class Policy implements Serializable {
     @Column(nullable = false, unique = true)
     private String name;
 
-    private Currency currency;
+    private String currency;
 
     private BigDecimal amount;
 

@@ -12,9 +12,10 @@ public class BeneficiaryDTOConverter {
         Beneficiary beneficiary = new Beneficiary();
         beneficiary.setEmail(beneficiaryDTO.getEmail());
         beneficiary.setName(beneficiaryDTO.getName());
-        beneficiary.setApplicantID(beneficiaryDTO.getApplicantID());
+        beneficiary.setApplicantEmail(beneficiaryDTO.getApplicantEmail());
         beneficiary.setNationalID(beneficiaryDTO.getNationalID());
         beneficiary.setPhoneNumber(beneficiaryDTO.getPhoneNumber());
+        beneficiary.setPlanID(beneficiaryDTO.getPlanID());
         return beneficiary;
     }
 
@@ -22,9 +23,10 @@ public class BeneficiaryDTOConverter {
         BeneficiaryDTO beneficiaryDTO = new BeneficiaryDTO();
         beneficiaryDTO.setEmail(beneficiary.getEmail());
         beneficiaryDTO.setName(beneficiary.getName());
-        beneficiaryDTO.setApplicantID(beneficiary.getApplicantID());
+        beneficiaryDTO.setApplicantEmail(beneficiary.getApplicantEmail());
         beneficiaryDTO.setNationalID(beneficiary.getNationalID());
         beneficiaryDTO.setPhoneNumber(beneficiary.getPhoneNumber());
+        beneficiaryDTO.setPlanID(beneficiary.getPlanID());
         return beneficiaryDTO;
     }
 }

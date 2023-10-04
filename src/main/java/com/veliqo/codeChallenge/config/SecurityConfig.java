@@ -9,7 +9,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -45,8 +44,9 @@ public class SecurityConfig  {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.cors().and().csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/swagger-ui/**","/swagger-resources/*",
-                        "/v3/api-docs/**", "/api/v1/veliqo/user/add", "/api/v1/veliqo/user/generateToken").permitAll()
+                .requestMatchers(
+                        "/swagger-ui/**","/swagger-resources/*", "/v3/api-docs/**",
+                        "api/v1/veliqo/applicant/registerApplicantAccount","/api/v1/veliqo/user/add", "/api/v1/veliqo/user/generateToken").permitAll()
                 .and()
                 .authorizeHttpRequests().requestMatchers("/api/v1/veliqo/**").authenticated()
                 .and()

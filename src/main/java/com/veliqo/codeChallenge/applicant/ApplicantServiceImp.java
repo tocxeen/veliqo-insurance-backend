@@ -59,8 +59,15 @@ public class ApplicantServiceImp implements ApplicantService {
     }
 
     @Override
-    public Optional<ApplicantDTO> updateApplicant(Applicant applicant){
-        findApplicantByEmail(applicant.getEmail());
+    public Optional<ApplicantDTO> updateApplicant(ApplicantDTO applicantDTO){
+       Applicant applicant = applicantRepository.findByEmail(applicantDTO.getEmail()).orElseThrow(()-> new RecordNotFoundException("Applicant not found"));
+       applicant.setCity(applicantDTO.getCity());
+       applicant.setCountry(applicantDTO.getCountry());
+       applicant.setStreet(applicantDTO.getStreet());
+       applicant.setSex(applicantDTO.getSex());
+       applicant.setDob(applicantDTO.getDob());
+       applicant.setZipCode(applicantDTO.getZipCode());
+       applicant.setMarriageStatus(applicantDTO.getMarriageStatus());
         return Optional.of(converter.toDTO(applicantRepository.save(applicant)));
     }
 

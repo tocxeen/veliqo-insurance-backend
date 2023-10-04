@@ -2,6 +2,7 @@ package com.veliqo.codeChallenge.beneficiary;
 
 import com.veliqo.codeChallenge.exceptions.RecordExistException;
 import com.veliqo.codeChallenge.exceptions.RecordNotFoundException;
+import com.veliqo.codeChallenge.policy.PolicyDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,9 +39,24 @@ public class BeneficiaryController {
     @GetMapping("/getBeneficiaryByEmail/{email}")
     public ResponseEntity<BeneficiaryDTO> getBeneficiaryByEmail(@PathVariable String email) {
         log.debug("finding beneficiary with email {}", email);
-        BeneficiaryDTO user = beneficiaryService.findBeneficiaryByEmail(email).orElseThrow(()->
+        BeneficiaryDTO beneficiary = beneficiaryService.findBeneficiaryByEmail(email).orElseThrow(()->
                 new RecordNotFoundException(String.format("Beneficiary not found")));
-        return new ResponseEntity<>(user,HttpStatus.OK);
+        return new ResponseEntity<>(beneficiary,HttpStatus.OK);
+    }
+
+    @GetMapping("/getApplicantBeneficiaries/{email}")
+    public ResponseEntity<List<BeneficiaryDTO>> getApplicantBeneficiaries(@PathVariable String email) {
+        log.debug("finding applicant beneficiary using applicantID {}", email);
+        List<BeneficiaryDTO> beneficiaries = beneficiaryService.findApplicantBeneficiaries(email);
+        return new ResponseEntity<>(beneficiaries,HttpStatus.OK);
+    }
+
+//    getBeneficiaryByPlanId
+    @GetMapping("/getBeneficiariesByPlanID/{id}")
+    public ResponseEntity<List<BeneficiaryDTO>> getBeneficiariesByPlanID(@PathVariable Long id) {
+        log.debug("finding applicant beneficiary using applicantID {}", id);
+        List<BeneficiaryDTO> beneficiaries = beneficiaryService.getBeneficiariesByPlanId(id);
+        return new ResponseEntity<>(beneficiaries,HttpStatus.OK);
     }
 
     @GetMapping("/getBeneficiaryByID/{id}")
@@ -55,6 +71,13 @@ public class BeneficiaryController {
     public ResponseEntity<List<BeneficiaryDTO>> getBeneficiaries() {
         List<BeneficiaryDTO> beneficiaries = beneficiaryService.findAllBeneficiaries();
         return new ResponseEntity<>(beneficiaries,HttpStatus.OK);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<BeneficiaryDTO> updateBeneficiary(@RequestBody BeneficiaryDTO beneficiaryDTO) {
+        BeneficiaryDTO savedBeneficiary = beneficiaryService.updateBeneficiary(beneficiaryDTO).orElseThrow(()->
+                new RecordExistException("Failed to update beneficiary"));
+        return new ResponseEntity<>(savedBeneficiary, HttpStatus.OK);
     }
 
 

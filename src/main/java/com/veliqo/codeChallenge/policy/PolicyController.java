@@ -42,11 +42,25 @@ public class PolicyController {
                 new RecordNotFoundException(String.format("Policy not found")));
         return new ResponseEntity<>(policyDTO,HttpStatus.OK);
     }
+    @GetMapping("/getPolicyByName/{name}")
+    public ResponseEntity<PolicyDTO> getPolicyByName(@PathVariable String name) {
+        log.debug("finding policy with name {}", name);
+        PolicyDTO policyDTO = policyService.findPolicyByName(name).orElseThrow(()->
+                new RecordNotFoundException(String.format("Policy not found")));
+        return new ResponseEntity<>(policyDTO,HttpStatus.OK);
+    }
 
     @GetMapping("/getPolicies")
     public ResponseEntity<List<PolicyDTO>> getPolicies() {
         List<PolicyDTO> beneficiaries = policyService.findAllPolicies();
         return new ResponseEntity<>(beneficiaries,HttpStatus.OK);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<PolicyDTO> updateApplicant(@RequestBody PolicyDTO policyDTO) {
+        PolicyDTO savedPolicy = policyService.updatePolicy(policyDTO).orElseThrow(()->
+                new RecordExistException("Failed to update policy"));
+        return new ResponseEntity<>(savedPolicy, HttpStatus.OK);
     }
 
 

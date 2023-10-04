@@ -1,6 +1,6 @@
 package com.veliqo.codeChallenge.applicant.models;
 
-public enum Married {
-    YES,
-    NO
+public enum MarriageStatus {
+    MARRIED,
+    SINGLE
 }

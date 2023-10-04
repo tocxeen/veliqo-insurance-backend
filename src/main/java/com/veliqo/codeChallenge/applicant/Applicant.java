@@ -1,7 +1,7 @@
 package com.veliqo.codeChallenge.applicant;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.veliqo.codeChallenge.applicant.models.Married;
+import com.veliqo.codeChallenge.applicant.models.MarriageStatus;
 import com.veliqo.codeChallenge.applicant.models.Sex;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -46,13 +46,8 @@ public class Applicant implements Serializable {
     private Sex sex;
 
     @Enumerated(EnumType.STRING)
-    private Married married;
+    private MarriageStatus marriageStatus;
 
     private BigDecimal balance;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate lastUpdate;
-
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate dateCreated;
 }

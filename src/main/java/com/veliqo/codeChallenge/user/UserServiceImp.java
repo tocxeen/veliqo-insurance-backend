@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.veliqo.codeChallenge.applicant.Applicant;
 import com.veliqo.codeChallenge.applicant.ApplicantDTO;
+import com.veliqo.codeChallenge.applicant.ApplicantService;
 import com.veliqo.codeChallenge.exceptions.InvalidPasswordException;
 import com.veliqo.codeChallenge.exceptions.RecordExistException;
 import com.veliqo.codeChallenge.exceptions.RecordNotFoundException;
@@ -33,6 +34,9 @@ public class UserServiceImp implements UserDetailsService {
     @Autowired
     private UserDTOConverter converter;
 
+    @Autowired
+    ApplicantService applicantService;
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -47,12 +51,18 @@ public class UserServiceImp implements UserDetailsService {
 
 
     public Optional<UserDTO> saveUser(User user) {
-        user.setStatus(Status.INACTIVE);
+        user.setStatus(Status.ACTIVE);
         user.setPassword(encoder.encode(user.getPassword()));
         userRepository.findByUsername(user.getUsername()).ifPresent(userData -> {
             throw new RecordExistException(String.format("User with email %s already exists", userData.getUsername()));
         });
-        return Optional.of(converter.toDTO(userRepository.save(user)));
+        User user1 = userRepository.save(user);
+        if(user1!=null){
+            Applicant applicant = new Applicant();
+            applicant.setEmail(user.getUsername());
+            applicantService.saveApplicant(applicant);
+        }
+        return Optional.of(converter.toDTO(user1));
     }
 
 

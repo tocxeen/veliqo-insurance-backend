@@ -45,6 +45,15 @@ public class PolicyServiceImp implements PolicyService {
     }
 
     @Override
+    public Optional<PolicyDTO> findPolicyByName(String name) {
+        Optional<Policy> beneficiaryDTO = policyRepository.findByName(name);
+        if(beneficiaryDTO.isPresent()){
+            return Optional.of(converter.toDTO(beneficiaryDTO.get()));
+        }
+        throw new RecordNotFoundException(String.format("Policy  %s does not exist!",name));
+    }
+
+    @Override
     public List<PolicyDTO> findAllPolicies() {
         List<Policy> policyDTO = policyRepository.findAll();
         List<PolicyDTO> policies = new ArrayList<>();
@@ -58,8 +67,10 @@ public class PolicyServiceImp implements PolicyService {
     }
 
     @Override
-    public Optional<PolicyDTO> updatePolicy(Policy policy){
-        policyRepository.findByName(policy.getName());
+    public Optional<PolicyDTO> updatePolicy(PolicyDTO policyDTO){
+        Policy policy = policyRepository.findByName(policyDTO.getName()).orElseThrow(()-> new RecordNotFoundException("Policy not found"));
+        policy.setCurrency(policyDTO.getCurrency());
+        policy.setAmount(policyDTO.getAmount());
         return Optional.of(converter.toDTO(policyRepository.save(policy)));
     }
 

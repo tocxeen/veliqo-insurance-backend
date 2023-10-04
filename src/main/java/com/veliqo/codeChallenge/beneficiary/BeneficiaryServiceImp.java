@@ -42,6 +42,20 @@ public class BeneficiaryServiceImp implements BeneficiaryService {
         }
         throw new RecordNotFoundException(String.format("Beneficiary not %s found!",email));
     }
+
+    @Override
+    public List<BeneficiaryDTO> findApplicantBeneficiaries(String email) {
+        List<Beneficiary> beneficiary = beneficiaryRepository.findAllByApplicantEmail(email);
+        List<BeneficiaryDTO> beneficiaries = new ArrayList<>();
+        if(beneficiary.size()>0){
+            beneficiary.forEach((data)->{
+                beneficiaries.add(converter.toDTO(data));
+            });
+            return beneficiaries;
+        }
+        throw new RecordNotFoundException(String.format("Beneficiary not %s found!",email));
+    }
+
     @Override
     public Optional<BeneficiaryDTO> findBeneficiaryById(Long id) {
         Optional<Beneficiary> beneficiaryDTO = beneficiaryRepository.findById(id);
@@ -53,10 +67,10 @@ public class BeneficiaryServiceImp implements BeneficiaryService {
 
     @Override
     public List<BeneficiaryDTO> findAllBeneficiaries() {
-        List<Beneficiary> beneficiaryDTO = beneficiaryRepository.findAll();
+        List<Beneficiary> beneficiary = beneficiaryRepository.findAll();
         List<BeneficiaryDTO> beneficiaries = new ArrayList<>();
-        if(beneficiaryDTO.size()>0){
-            beneficiaryDTO.forEach((data)->{
+        if(beneficiary.size()>0){
+            beneficiary.forEach((data)->{
                 beneficiaries.add(converter.toDTO(data));
             });
             return beneficiaries;
@@ -65,8 +79,26 @@ public class BeneficiaryServiceImp implements BeneficiaryService {
     }
 
     @Override
-    public Optional<BeneficiaryDTO> updateBeneficiary(Beneficiary beneficiary){
-        findBeneficiaryByEmail(beneficiary.getEmail());
+    public List<BeneficiaryDTO> getBeneficiariesByPlanId(Long id) {
+        List<Beneficiary> beneficiary = beneficiaryRepository.findAllByPlanID(id);
+        List<BeneficiaryDTO> beneficiaries = new ArrayList<>();
+        if(beneficiary.size()>0){
+            beneficiary.forEach((data)->{
+                beneficiaries.add(converter.toDTO(data));
+            });
+            return beneficiaries;
+        }
+        throw new RecordNotFoundException(String.format("No data found"));
+    }
+
+
+    @Override
+    public Optional<BeneficiaryDTO> updateBeneficiary(BeneficiaryDTO beneficiaryDTO){
+        Beneficiary beneficiary =  beneficiaryRepository.findByEmail(beneficiaryDTO.getEmail()).orElseThrow(()-> new RecordNotFoundException("beneficiary not found"));
+        beneficiary.setPhoneNumber(beneficiaryDTO.getPhoneNumber());
+        beneficiary.setNationalID(beneficiaryDTO.getNationalID());
+        beneficiary.setEmail(beneficiaryDTO.getEmail());
+        beneficiary.setPlanID(beneficiaryDTO.getPlanID());
         return Optional.of(converter.toDTO(beneficiaryRepository.save(beneficiary)));
     }
 

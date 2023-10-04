@@ -32,6 +32,8 @@ public class Beneficiary implements Serializable {
     private String nationalID;
 
     @Column(nullable = false,updatable = false)
-    private Long applicantID;
+    private String applicantEmail;
+
+    private Long planID;
 
 }

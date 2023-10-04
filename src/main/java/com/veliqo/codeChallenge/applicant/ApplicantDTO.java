@@ -1,6 +1,6 @@
 package com.veliqo.codeChallenge.applicant;
 
-import com.veliqo.codeChallenge.applicant.models.Married;
+import com.veliqo.codeChallenge.applicant.models.MarriageStatus;
 import com.veliqo.codeChallenge.applicant.models.Sex;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,7 +30,7 @@ public class ApplicantDTO {
 
     private Sex sex;
 
-    private Married married;
+    private MarriageStatus marriageStatus;
 
     private BigDecimal balance;
 

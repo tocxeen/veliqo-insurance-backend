@@ -14,7 +14,7 @@ public interface ApplicantService {
 
     Optional<ApplicantDTO> findApplicantByEmail(String email);
 
-    Optional<ApplicantDTO> updateApplicant(Applicant applicant);
+    Optional<ApplicantDTO> updateApplicant(ApplicantDTO applicant);
 
     BigDecimal updateApplicantBalance(Transaction transaction);
 }

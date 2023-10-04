@@ -16,7 +16,7 @@ public class ApplicantDTOConverter {
         applicant.setCountry(applicantDTO.getCountry());
         applicant.setDob(applicantDTO.getDob());
         applicant.setEmail(applicantDTO.getEmail());
-        applicant.setMarried(applicantDTO.getMarried());
+        applicant.setMarriageStatus(applicantDTO.getMarriageStatus());
         applicant.setSex(applicantDTO.getSex());
         applicant.setStreet(applicantDTO.getStreet());
         applicant.setZipCode(applicantDTO.getZipCode());
@@ -30,10 +30,11 @@ public class ApplicantDTOConverter {
         applicantDTO.setCountry(applicant.getCountry());
         applicantDTO.setDob(applicant.getDob());
         applicantDTO.setEmail(applicant.getEmail());
-        applicantDTO.setMarried(applicant.getMarried());
+        applicantDTO.setMarriageStatus(applicant.getMarriageStatus());
         applicantDTO.setSex(applicant.getSex());
         applicantDTO.setStreet(applicant.getStreet());
         applicantDTO.setZipCode(applicant.getZipCode());
+        applicantDTO.setBalance(applicant.getBalance());
         return applicantDTO;
     }
 }

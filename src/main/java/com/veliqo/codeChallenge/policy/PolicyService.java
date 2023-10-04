@@ -9,7 +9,9 @@ public interface PolicyService {
 
     Optional<PolicyDTO> findPolicyById(Long id);
 
+    Optional<PolicyDTO> findPolicyByName(String name);
+
     List<PolicyDTO> findAllPolicies();
 
-    Optional<PolicyDTO> updatePolicy(Policy policy);
+    Optional<PolicyDTO> updatePolicy(PolicyDTO policy);
 }

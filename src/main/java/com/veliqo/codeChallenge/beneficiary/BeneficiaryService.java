@@ -1,7 +1,5 @@
 package com.veliqo.codeChallenge.beneficiary;
 
-import jakarta.transaction.Transactional;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -11,9 +9,13 @@ public interface BeneficiaryService {
 
     Optional<BeneficiaryDTO> findBeneficiaryByEmail(String email);
 
+    List<BeneficiaryDTO> findApplicantBeneficiaries(String email);
+
     Optional<BeneficiaryDTO> findBeneficiaryById(Long id);
 
     List<BeneficiaryDTO> findAllBeneficiaries();
 
-    Optional<BeneficiaryDTO> updateBeneficiary(Beneficiary beneficiary);
+    List<BeneficiaryDTO> getBeneficiariesByPlanId(Long id);
+
+    Optional<BeneficiaryDTO> updateBeneficiary(BeneficiaryDTO beneficiary);
 }

@@ -11,6 +11,7 @@ public class PolicyDTOConverter {
 
     public Policy toEntity(PolicyDTO policyDTO) {
         Policy policy = new Policy();
+        policy.setCurrency(policyDTO.getCurrency());
         policy.setAmount(policyDTO.getAmount());
         policy.setName(policyDTO.getName());
         return policy;
@@ -18,6 +19,7 @@ public class PolicyDTOConverter {
 
     public PolicyDTO toDTO(Policy policy){
         PolicyDTO policyDTO = new PolicyDTO();
+        policyDTO.setCurrency(policy.getCurrency());
         policyDTO.setAmount(policy.getAmount());
         policyDTO.setName(policy.getName());
         return policyDTO;

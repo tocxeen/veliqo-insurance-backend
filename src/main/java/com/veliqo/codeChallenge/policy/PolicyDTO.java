@@ -18,4 +18,6 @@ public class PolicyDTO {
 
     private BigDecimal amount;
 
+    private String currency;
+
 }

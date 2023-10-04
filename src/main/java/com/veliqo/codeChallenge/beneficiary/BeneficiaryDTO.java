@@ -20,6 +20,8 @@ public class BeneficiaryDTO {
 
     private String nationalID;
 
-    private Long applicantID;
+    private String applicantEmail;
+
+    private Long planID;
 
 }
